@@ -1,0 +1,16 @@
+{
+  "name": "react-doushen",
+  "version": "0.1.0",
+  "devDependencies": {
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0",
+    "transform-loader": "^0.2.1",
+    "jsx-loader": "^0.13.2",
+    "history": "^2.0.0",
+    "webpack": "^1.12.12",
+    "webpack-dev-server": "^1.14.1"
+  },
+  "dependencies": {
+    "react-router": "^1.0.3"
+  }
+}
