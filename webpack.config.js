@@ -23,9 +23,9 @@ module.exports = {
     },
     */
     output: {
-      path: __dirname + '/__build__',
+      path: __dirname + '/build',
       filename: 'app.js',
-      publicPath: '__build__'
+      publicPath: 'build'
     },
 
     module: {
@@ -38,13 +38,13 @@ module.exports = {
 
     plugins: [
       // new webpack.optimize.CommonsChunkPlugin('common.js'),
-      /*
+    
       new webpack.optimize.UglifyJsPlugin({
         compress: {
           warnings: false
         }
       }),
-      */
+    
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
     })
