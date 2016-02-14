@@ -20,8 +20,8 @@ var IndexRoute = ReactRouter.IndexRoute;
 var Nav = require('./components/canvasside.jsx');
 var Movies = require('./page/movies.jsx');
 var Movieinfo = require('./page/movieinfo.jsx');
-var RMovies = require('./routes/movies.jsx');
-var RMovieInfo = require('./routes/movieinfo.jsx');
+var Books = require('./page/books.jsx');
+var Book = require('./page/book.jsx');
 
 
 var App = React.createClass({
@@ -54,6 +54,8 @@ ReactDOM.render((
       <IndexRoute component={{list: Movies}} />
       <Route path="movies" component={{list: Movies}} />
       <Route path="movie/:id" component={{list: Movies, info: Movieinfo}}/>
+      <Route path="books" component={{list: Books}} />
+      <Route path="book/:id" component={{list: Books, info: Book}}/>
       <Route path="*" component={{list: Movies}}/>
     </Route>
   </Router>

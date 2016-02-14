@@ -27,13 +27,13 @@ var Nav = React.createClass({
       <div className="mui-scroll-wrapper">  
       <ul className="mui-table-view mui-table-view-chevron mui-table-view-inverted">
         <li className="mui-table-view-cell" onClick={this.showMovies}>
-          <a className="mui-navigate-right nav-item-title">电影</a>
+          <Link className="mui-navigate-right nav-item-title" to="/movies">电影</Link>
         </li>
         <li className="mui-table-view-cell" onClick={this.showBooks}>
-          <a className="mui-navigate-right nav-item-title">图书</a>
+          <Link className="mui-navigate-right nav-item-title" to="/books">图书</Link>
         </li>
         <li className="mui-table-view-cell" onClick={this.showDailiy}>
-          <a className="mui-navigate-right nav-item-title">日报</a>
+          <Link className="mui-navigate-right nav-item-title" to="/">日报</Link>
         </li>    
       </ul> 
       </div>

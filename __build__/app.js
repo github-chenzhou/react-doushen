@@ -64,8 +64,8 @@
 	var Nav = __webpack_require__(224);
 	var Movies = __webpack_require__(225);
 	var Movieinfo = __webpack_require__(228);
-	var RMovies = __webpack_require__(229);
-	var RMovieInfo = __webpack_require__(230);
+	var Books = __webpack_require__(229);
+	var Book = __webpack_require__(231);
 
 	var App = React.createClass({ displayName: "App",
 
@@ -79,7 +79,7 @@
 
 	// router配置
 
-	ReactDOM.render(React.createElement(Router, { history: browserHistory }, React.createElement(Route, { path: "/", component: App }, React.createElement(IndexRoute, { component: { list: Movies } }), React.createElement(Route, { path: "movies", component: { list: Movies } }), React.createElement(Route, { path: "movie/:id", component: { list: Movies, info: Movieinfo } }), React.createElement(Route, { path: "*", component: { list: Movies } }))), document.getElementById('main'));
+	ReactDOM.render(React.createElement(Router, { history: browserHistory }, React.createElement(Route, { path: "/", component: App }, React.createElement(IndexRoute, { component: { list: Movies } }), React.createElement(Route, { path: "movies", component: { list: Movies } }), React.createElement(Route, { path: "movie/:id", component: { list: Movies, info: Movieinfo } }), React.createElement(Route, { path: "books", component: { list: Books } }), React.createElement(Route, { path: "book/:id", component: { list: Books, info: Book } }), React.createElement(Route, { path: "*", component: { list: Movies } }))), document.getElementById('main'));
 
 /***/ },
 /* 1 */
@@ -25065,13 +25065,13 @@
 	      React.createElement("div", {className: "mui-scroll-wrapper"}, 
 	      React.createElement("ul", {className: "mui-table-view mui-table-view-chevron mui-table-view-inverted"}, 
 	        React.createElement("li", {className: "mui-table-view-cell", onClick: this.showMovies}, 
-	          React.createElement("a", {className: "mui-navigate-right nav-item-title"}, "电影")
+	          React.createElement(Link, {className: "mui-navigate-right nav-item-title", to: "/movies"}, "电影")
 	        ), 
 	        React.createElement("li", {className: "mui-table-view-cell", onClick: this.showBooks}, 
-	          React.createElement("a", {className: "mui-navigate-right nav-item-title"}, "图书")
+	          React.createElement(Link, {className: "mui-navigate-right nav-item-title", to: "/books"}, "图书")
 	        ), 
 	        React.createElement("li", {className: "mui-table-view-cell", onClick: this.showDailiy}, 
-	          React.createElement("a", {className: "mui-navigate-right nav-item-title"}, "日报")
+	          React.createElement(Link, {className: "mui-navigate-right nav-item-title", to: "/"}, "日报")
 	        )
 	      )
 	      )
@@ -25557,7 +25557,9 @@
 	          React.createElement("h2", null, React.createElement("a", {href: this.state.data.mobile_url}, this.state.data.title))
 	        ), 
 	        React.createElement("article", {className: "info_detail"}, this.state.data.summary), 
-	         React.createElement("video", {width: "100%", src: "http://vt3.douban.com/201602131838/3de37daa4b249e3fb9d5a499ff522337/view/movie/M/301080756.mp4", controls: "controls", autobuffer: true})
+	        React.createElement("video", {id: "J_video", width: "100%", 
+	          src: "http://vt3.douban.com/201602131838/3de37daa4b249e3fb9d5a499ff522337/view/movie/M/301080756.mp4", controls: "controls", autoplay: "autoplay"}
+	        )
 	      )
 	      )
 	    );
@@ -25585,37 +25587,301 @@
 
 	'use strict';
 
-	module.exports = {
-	  path: 'movies',
-	  getComponent:function(location, cb) {
-	    !/* require.ensure */(function(require){
-	      cb(null, __webpack_require__(225))
-	    }(__webpack_require__))
+	var React = __webpack_require__(10);
+	var ReactDOM = __webpack_require__(166);
+
+	var MovieHeader = __webpack_require__(226);
+	var Bookitem = __webpack_require__(230);
+
+	var Books = React.createClass({displayName: "Books",
+	  propTypes: {
+	    // width: React.PropTypes.number.isRequired
+	  },
+
+	  getBooks: function(pageNo) {
+	    var _this = this;
+	    var start = pageNo * 10;
+
+	    this.pageNo = pageNo;
+
+	    $.ajax({
+	      url: 'https://api.douban.com/v2/book/search',
+	      dataType: 'jsonp',
+	      type: 'get',
+	      jsonp: 'callback',
+	      data: {'q': '', 'tag': '经典', 'start': start, 'count': 10, apikey:'0c9ca568e0e58e2025d5f03aa2b0aa60' }, 
+	      cache: false,
+	      success: function(json) {
+	         if (json) {
+	            var data = json.books;
+
+	            _.each(data, function(item){
+	              var img = new Image();
+	              img.src = item.images["large"];
+	            });
+
+	          this.renderItem(this.data.concat(data));        
+	        }
+	      }.bind(this),
+	      error: function(xhr, status, err) {
+	        console.error(this.props.url||'', status, err);
+	      }.bind(this)
+	    });
+	  },
+	  
+
+	  getInitialState: function() {
+	    this.data = [];
+	    this.getBooks(0);
+	    return {data: [], column1: [], column2: []};
+	  },
+
+	  componentDidMount: function() {
+	    this.el = document.getElementById('J_books');
+	  },
+
+	  componentWillUnmount: function() {
+	    this.el.removeEventListener('touchmove', this.handleScroll);
+	  },
+
+	  handleScroll: function(evt) {
+	    var el = this.el;
+
+	    if (el.scrollHeight - el.clientHeight - el.scrollTop < 500) {
+	      this.pageNo = this.pageNo + 1;
+	      this.getBooks(this.pageNo);
+	    }
+	  },
+
+	  renderItem: function(data) {
+	    var uls = $('#J_books ul');
+
+	    for(var i=0, len=data.length; i<len; i++){
+	      var item = data[i];
+	    
+	      uls.sort(function (ul1, ul2) {
+	        return ul1.offsetHeight - ul2.offsetHeight;
+	      });
+
+	     uls.first().append(React.renderToString(React.createElement(Bookitem, {
+	          id: item.id, 
+	          title: item.title, 
+	          images: item.images, key: i}
+	        )));
+
+	      /*
+	      ReactDOM.render(<Bookitem 
+	          id={item.id} 
+	          title={item.title} 
+	          images={item.images} key={i}>
+	        </Bookitem>, uls.first().get(0));
+	      */
+	    }
+	  },
+
+	  render: function () {
+	    /*
+	    var items = this.state.data.map(function (item, i) {
+	      return (
+	        <Bookitem 
+	          id={item.id} 
+	          title={item.title} 
+	          images={item.images} key={i}>
+	        </Bookitem>
+	      );
+	    });
+	    */
+	    
+	    return (
+	      React.createElement("div", null, 
+	      React.createElement(MovieHeader, {title: "图书"}), 
+	      React.createElement("section", {id: "J_books", className: "list", onTouchMove: this.handleScroll}, 
+	        React.createElement("ul", {id: "J_books_left", className: "books books-left "}), 
+	        React.createElement("ul", {id: "J_books_right", className: "books books-right "})
+	      )
+	      )
+	    );
+	  },
+
+	  getTitleStyle: function () {
+	    return {
+	      top: 32,
+	      left: 80,
+	      width: this.props.width - 90,
+	      height: 18,
+	      fontSize: 14,
+	      lineHeight: 18
+	    };
 	  }
-	}
+
+	});
+
+	module.exports = Books;
 
 /***/ },
 /* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * @desc 电影列表
+	 * @desc 图书列表项
+	 * @author 陈舟
+	 * @date 2016.2.14
+	*/
+
+	'use strict';
+
+	var React = __webpack_require__(10);
+	var Link = __webpack_require__(167).Link;
+
+	var Bookitem = React.createClass({displayName: "Bookitem",
+
+	  propTypes: {
+	    // id: React.PropTypes.string.isRequired,
+	    title: React.PropTypes.string.isRequired
+	  },
+
+	  statics: {
+	    getItemHeight: function () {
+	      return 80;
+	    }
+	  },
+
+	  handleClick: function(){
+
+	  },
+
+	  render: function () {
+	    return (
+	      React.createElement("li", {className: "book_box"}, 
+	        React.createElement("span", {className: "pic_wrap"}, 
+	          React.createElement(Link, {to: ("/book/" + this.props.id)}, React.createElement("img", {src: this.props.images["large"]})), 
+	          React.createElement("i", {className: "valign"})
+	        ), 
+	        React.createElement("p", {className: "title"}, React.createElement(Link, {to: ("/book/" + this.props.id)}, this.props.title))
+	      )
+	    );
+	  },
+
+	  getStyle: function () {
+	    return {
+	      width: this.props.width,
+	      height: Item.getItemHeight(),
+	      backgroundColor: (this.props.itemIndex % 2) ? '#eee' : '#a5d2ee'
+	    };
+	  }
+
+	});
+
+	module.exports = Bookitem;
+
+/***/ },
+/* 231 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * @desc 图书详情
 	 * @author 陈舟
 	 * @date 2016.2.5
 	*/
 
 	'use strict';
 
-	module.exports = {
-	  path: 'movie/:id',
+	var React = __webpack_require__(10);
+	var Link = __webpack_require__(167).Link;
 
-	  getComponent:function(location, cb) {
-	    !/* require.ensure */(function(require){
-	      cb(null, __webpack_require__(228))
-	    }(__webpack_require__))
+	var Book = React.createClass({displayName: "Book",
+	  propTypes: {
+	    // width: React.PropTypes.number.isRequired
+	    // height: React.PropTypes.number.isRequired,
+	    // imageUrl: React.PropTypes.string.isRequired,
+	    // title: React.PropTypes.string.isRequired
+	  },
+
+	  loadMovieInfo: function(id) {
+	    var _this = this;
+	    // TODO: 显示电影详情
+	    this.el.classList.add('info-into');
+
+	    $.ajax({
+	      url: 'https://api.douban.com/v2/book/'+id,
+	      dataType: 'jsonp',
+	      type: 'get',
+	      jsonp: 'callback',
+	      data: {apikey:'0c9ca568e0e58e2025d5f03aa2b0aa60'}, 
+	      cache: false,
+	      success: function(json) {
+	         if (json) {
+	          var data = json;
+
+	          // this.formatData(data);
+	          this.setState({data: data});   
+	        }
+	      }.bind(this),
+	      error: function(xhr, status, err) {
+	        console.error('', status, err.toString());
+	      }.bind(this)
+	    });
+	  },
+
+	  getInitialState: function() {
+	    this.el = document.getElementById('J_container');
+	    return {data: {images: { large: ''}}};
+	  },
+
+	  componentDidMount: function() {
+	    var id = this.props.params.id;
+	    this.loadMovieInfo(id);
+	  },
+
+	  componentWillUnmount: function() {
+	    this.el.removeEventListener('touchmove', this.handleScroll);
+	  },
+
+	  componentWillReceiveProps:function(nextProps) {
+	    var id = nextProps.params.id;
+	    this.loadMovieInfo(id);
+	  },
+
+	  // EVEVNT
+
+	  handleScroll: function(evt) {
+	    var el = this.el;
+	  },
+
+	  // 返回电影列表
+	  back: function(){
+	     this.el.classList.remove('info-into');
+	  },
+
+	  render: function () {
+	    return (
+	      React.createElement("section", null, 
+	      React.createElement("nav", {className: "top_navgination clearfix"}, 
+	        React.createElement("a", {href: "javascript:;", className: "fl back J_movie_back", onClick: this.back}, React.createElement("i", {className: "arror_left"})), 
+	        React.createElement("h1", {className: "top_title txt_cut"}, "图书介绍")
+	      ), 
+	      React.createElement("div", {className: "info-banner"}, React.createElement("img", {width: "100%", src: this.state.data.images["large"], className: ""})), 
+	      React.createElement("div", {className: "artical_cont mb60"}, 
+	        React.createElement("header", {className: "info_title information_title clearfix"}, 
+	          React.createElement("h2", null, React.createElement("a", {href: this.state.data.mobile_url}, this.state.data.title))
+	        ), 
+	        React.createElement("article", {className: "info_detail"}, this.state.data.summary), 
+	        React.createElement("article", {class: "info_detail"}, this.state.data.catalog), 
+	        React.createElement("article", {class: "info_detail"}, this.state.data.author_intro)
+	      )
+	      )
+	    );
+	  },
+
+	  getStyle: function () {
+	    return {
+	      width: '100%'
+	    };
 	  }
-	}
 
+	});
+
+	module.exports = Book;
 
 /***/ }
 /******/ ]);
