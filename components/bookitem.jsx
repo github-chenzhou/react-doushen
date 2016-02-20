@@ -27,13 +27,15 @@ var Bookitem = React.createClass({
   },
 
   render: function () {
+    var href = '/book/' + this.props.id;
+
     return (
       <li className="book_box">
         <span className="pic_wrap">
           <Link to={`/book/${this.props.id}`}><img src={this.props.images["large"]}/></Link>
           <i className="valign"></i>
         </span>
-        <p className="title"><Link to={`/book/${this.props.id}`}>{this.props.title}</Link></p>
+        <p className="title"><a href={href}>{this.props.title}</a></p>
       </li>
     );
   },

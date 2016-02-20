@@ -33,7 +33,7 @@ var Header = React.createClass({
   },
 
   showNav: function(){
-     this.el.classList.toggle('nav-in');
+    this.el.classList.toggle('nav-in');
   },
 
   getStyle: function () {

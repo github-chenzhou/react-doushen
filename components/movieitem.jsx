@@ -9,6 +9,8 @@
 var React = require('react');
 var Link = require('react-router').Link;
 
+var Itemimgs = require('./itemimgs.jsx');
+
 var Movieitem = React.createClass({
 
   propTypes: {
@@ -53,23 +55,7 @@ var Movieitem = React.createClass({
 
             </dd></dl></header>
 
-            <section className="feed_cont">
-            <div className="feed_pic">
-            <ul className="feed_pic_list">
-              { this.props.imgs.map(function(src, i) {
-                if(i < 4){
-                  return (
-                    <li key={i}><span className="pic_wrap">
-                    <img src={src} className="J_feed_img" data-src="setSytle" />
-                    <i className="valign"></i>
-                    </span></li>
-                  );
-                }
-          
-              }, this)}
-            </ul>
-            </div>
-            </section>
+            <Itemimgs imgs={this.props.imgs} />
 
             <footer className="gray_bar flex_equal">
             <a href="javascript:;" className="flex_item">

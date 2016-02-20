@@ -31,16 +31,16 @@ var Books = React.createClass({
       data: {'q': '', 'tag': '经典', 'start': start, 'count': 10, apikey:'0c9ca568e0e58e2025d5f03aa2b0aa60' }, 
       cache: false,
       success: function(json) {
-         if (json) {
-            var data = json.books;
+        if (json) {
+          var data = json.books;
 
-            _.each(data, function(item){
-              var img = new Image();
-              img.src = item.images["large"];
-            });
+          _.each(data, function(item, i){
+            var img = new Image();
+            img.src = item.images["large"];
+          });
 
-          this.renderItem(this.data.concat(data));        
-        }
+          this.renderItem(data);
+          }
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url||'', status, err);
@@ -63,13 +63,88 @@ var Books = React.createClass({
     this.el.removeEventListener('touchmove', this.handleScroll);
   },
 
-  handleScroll: function(evt) {
-    var el = this.el;
+  handleEvent: function(event) {
+    var _this = this;
 
-    if (el.scrollHeight - el.clientHeight - el.scrollTop < 500) {
-      this.pageNo = this.pageNo + 1;
-      this.getBooks(this.pageNo);
+    if (event.type == 'touchstart') {
+      _this.start(event);
+    } else if(event.type == 'touchmove') {
+       _this.move(event);
+    } else if(event.type == 'touchend') {
+      _this.end(event);
     }
+  },
+
+  // 滑动开始
+  start: function( event ) {
+    if ( !event.touches || event.touches.length < 1) return;
+
+    this.isMoving = true;
+    this.startTime = new Date().getTime();
+    this.startX = event.touches[0].pageX;
+    this.startY = event.touches[0].pageY;
+
+    // 绑定事件
+    var Books = this.el;
+    Books.addEventListener( 'touchmove', this, false );
+    Books.addEventListener( 'touchend', this, false );
+  },
+
+  // 移动
+  move: function(event) {
+    if ( !event.touches || event.touches.length < 1) return;
+    
+    if (this.isMoving) {
+      var offset = {
+        X: event.touches[0].pageX - this.startX,
+        Y: event.touches[0].pageY - this.startY
+      };
+
+      this.offset = offset;
+
+      var xOffset = Math.abs(offset['X']) || 0;
+      // 向下滑动 增加开关量 做限制
+      if (!this.isLoading && offset['Y'] < 0  && Math.abs( offset['Y'] + xOffset ) > 10 ) {
+        var wrapper = this.el;
+        if(wrapper.scrollHeight - wrapper.clientHeight - wrapper.scrollTop < wrapper.clientHeight) {
+          this.pageNo = this.pageNo + 1;
+          this.getBooks(this.pageNo);
+        }
+      }
+    }
+  },
+
+  // 滑动释放
+  end: function( event ) {
+    if ( !event.touches ) return;
+    this.isMoving = false;
+
+    var offset = this.offset;
+    var endTime = new Date().getTime();
+
+    // a quick slide time must under 300ms
+    // a quick slide should also slide at least 14 px
+    //var duration = endTime - this.startTime > 300;
+    if(!offset) return this;
+
+    var xOffset = Math.abs(offset['X']) || 0;
+
+    // TODO: 向下滑动 增加开关量 做限制
+    if (!this.isLoading && offset['Y'] < 0 && Math.abs( offset['Y'] + xOffset ) > 10) {
+      var wrapper = this.el;
+
+      if(wrapper.scrollHeight - wrapper.clientHeight - wrapper.scrollTop < wrapper.clientHeight) {
+        // this.pageNo = this.pageNo + 1;
+        // this.getBooks(this.pageNo);
+      }
+    }
+
+    this.offset.X = this.offset.Y = 0;
+
+    // 解绑事件
+    var Books = this.el;
+    Books.removeEventListener('touchmove', this, false);
+    Books.removeEventListener('touchend', this, false);
   },
 
   renderItem: function(data) {
@@ -78,29 +153,14 @@ var Books = React.createClass({
     for(var i=0, len=data.length; i<len; i++){
       var item = data[i];
     
-      uls.sort(function (ul1, ul2) {
-        return ul1.offsetHeight - ul2.offsetHeight;
-      });
+      uls[0].offsetHeight < uls[1].offsetHeight ? this.state.column1.push(item) : this.state.column2.push(item);
 
-     uls.first().append(React.renderToString(<Bookitem 
-          id={item.id} 
-          title={item.title} 
-          images={item.images} key={i}>
-        </Bookitem>));
-
-      /*
-      ReactDOM.render(<Bookitem 
-          id={item.id} 
-          title={item.title} 
-          images={item.images} key={i}>
-        </Bookitem>, uls.first().get(0));
-      */
+      this.setState({column1: this.state.column1, column2: this.state.column2}) 
     }
   },
 
   render: function () {
-    /*
-    var items = this.state.data.map(function (item, i) {
+    var column1 = this.state.column1.map(function (item, i) {
       return (
         <Bookitem 
           id={item.id} 
@@ -109,14 +169,24 @@ var Books = React.createClass({
         </Bookitem>
       );
     });
-    */
+
+    var column2 = this.state.column2.map(function (item, i) {
+      return (
+        <Bookitem 
+          id={item.id} 
+          title={item.title} 
+          images={item.images} key={i}>
+        </Bookitem>
+      );
+    });
     
+    // onTouchMove={this.handleScroll}
     return (
       <div>
       <MovieHeader title="图书" />
-      <section id='J_books' className="list" onTouchMove={this.handleScroll}>
-        <ul id='J_books_left' className="books books-left "></ul>
-        <ul id='J_books_right' className="books books-right "></ul>
+      <section id='J_books' className="list" onTouchStart={this.start}>
+        <ul id='J_books_left' className="books books-left ">{column1}</ul>
+        <ul id='J_books_right' className="books books-right ">{column2}</ul>
       </section>
       </div>
     );

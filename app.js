@@ -5,6 +5,7 @@ require('./css/mobile/common.css');
 require('./css/mobile/index.css');
 
 require('./js/flexible.js');
+require('./js/util/vendor.js');
 
 
 var React = require('react');
@@ -56,7 +57,6 @@ ReactDOM.render((
       <Route path="movie/:id" component={{list: Movies, info: Movieinfo}}/>
       <Route path="books" component={{list: Books}} />
       <Route path="book/:id" component={{list: Books, info: Book}}/>
-      <Route path="*" component={{list: Movies}}/>
     </Route>
   </Router>
   ), document.getElementById('main'));

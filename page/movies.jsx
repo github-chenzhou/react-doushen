@@ -90,13 +90,77 @@ var Movies = React.createClass({
     this.el.removeEventListener('touchmove', this.handleScroll);
   },
 
-  handleScroll: function(evt) {
-    var el = this.el;
+  handleEvent: function (event) {
+    var _this = this;
 
-    if (el.scrollHeight - el.clientHeight - el.scrollTop < 500) {
-      this.pageNo = this.pageNo + 1;
-      this.loadMoviesFromServer(this.pageNo);
+    if(event.type == 'touchstart') {
+       _this.start(event);
+    } else if (event.type == 'touchmove') {
+      _this.move(event);
+    } else if (event.type == 'touchend') {
+      _this.end(event);
     }
+  },
+
+  // 滑动开始
+  start: function (event) {
+    if (!event.touches || event.touches.length < 1) return;
+
+    this.isMoving = true;
+    this.startTime = new Date().getTime();
+    this.startX = event.touches[0].pageX;
+    this.startY = event.touches[0].pageY;
+
+    // 绑定事件
+    var movies = this.el;
+    movies.addEventListener('touchmove', this, false);
+    movies.addEventListener('touchend', this, false);
+  },
+
+  // 移动
+  move: function (event) {
+    if (!event.touches || event.touches.length < 1) return;
+    
+    if (this.isMoving) {
+      var offset = {
+        X: event.touches[0].pageX - this.startX,
+        Y: event.touches[0].pageY - this.startY
+      };
+
+      this.offset = offset;
+    }
+  },
+
+  // 滑动释放
+  end: function (event) {
+    if (!event.touches) return;
+
+    this.isMoving = false;
+    var offset = this.offset;
+    var boundary = 100;
+    var endTime = new Date().getTime();
+
+    // a quick slide time must under 300ms
+    // a quick slide should also slide at least 14 px
+    //var duration = endTime - this.startTime > 300;
+    if (!offset) return this;
+    var xOffset = offset && Math.abs(offset['X']) || 0;
+
+    // TODO: 向下滑动 增加开关量 做限制
+    if (!this.isLoading && offset['Y'] < 0 && Math.abs(offset['Y'] + xOffset) > 10) {
+      var wrapper = this.el;
+      if (wrapper.scrollHeight - wrapper.clientHeight - wrapper.scrollTop < 500) {
+        this.pageNo = this.pageNo + 1;
+        this.loadMoviesFromServer(this.pageNo);
+      }
+    } 
+
+    this.offset.X = this.offset.Y = 0;
+
+    // 解绑事件
+    var movies = this.el;
+    movies.removeEventListener('touchmove', this, false);
+    movies.removeEventListener('touchend', this, false);
   },
 
   render: function () {
@@ -116,7 +180,7 @@ var Movies = React.createClass({
     return (
       <div>
       <MovieHeader title="电影列表" />
-      <section id='J_movies_list' className="list" onTouchMove={this.handleScroll}>
+      <section id='J_movies_list' className="list" onTouchStart={this.start}>
         <section id='J_movies' className="feed_list">
           {items}
         </section>
