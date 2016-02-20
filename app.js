@@ -7,7 +7,6 @@ require('./css/mobile/index.css');
 require('./js/flexible.js');
 require('./js/util/vendor.js');
 
-
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -27,8 +26,6 @@ var Book = require('./page/book.jsx');
 var App = React.createClass({
 
   render: function () {
-    var isList = this.props.list ? true : false;
-
     return (
       <div id="J_container" className="view">
         <Nav />

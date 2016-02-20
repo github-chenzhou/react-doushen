@@ -9,7 +9,6 @@
 var React = require('react');
 
 var Itemimgs = React.createClass({
-
   render: function () {
     var imgs = this.props.imgs;
 
@@ -22,7 +21,7 @@ var Itemimgs = React.createClass({
               return (
                 <li key={i}>
                   <span className="pic_wrap">
-                    <img src={src} className="J_feed_img" data-src="setSytle" data-src={src} onLoad={this.load} />
+                    <img src={src} className="J_feed_img" data-src={src} onLoad={this.load} />
                     <i className="valign"></i>
                   </span>
                 </li>
@@ -67,25 +66,6 @@ var Itemimgs = React.createClass({
       imgEl.attr('width', fixWidth);
       imgEl.attr('height', fixHeight );
     }
-  },
-
-  getStyle: function () {
-    return {
-      width: this.props.width,
-      height: Item.getItemHeight(),
-      backgroundColor: (this.props.itemIndex % 2) ? '#eee' : '#a5d2ee'
-    };
-  },
-
-  getTitleStyle: function () {
-    return {
-      top: 32,
-      left: 80,
-      width: this.props.width - 90,
-      height: 18,
-      fontSize: 14,
-      lineHeight: 18
-    };
   }
 
 });

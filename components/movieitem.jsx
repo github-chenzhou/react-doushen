@@ -18,14 +18,7 @@ var Movieitem = React.createClass({
     title: React.PropTypes.string.isRequired
   },
 
-  statics: {
-    getItemHeight: function () {
-      return 80;
-    }
-  },
-
   handleClick: function(){
-
   },
 
   render: function () {
@@ -53,11 +46,12 @@ var Movieitem = React.createClass({
               }, this)}
             </p>
 
-            </dd></dl></header>
+            </dd></dl>
+          </header>
 
-            <Itemimgs imgs={this.props.imgs} />
+          <Itemimgs imgs={this.props.imgs} />
 
-            <footer className="gray_bar flex_equal">
+          <footer className="gray_bar flex_equal">
             <a href="javascript:;" className="flex_item">
               <i className="iconfont icon-heart"></i>
               <span className="color8 text_sub">{this.props.collect_count}</span>
@@ -67,25 +61,16 @@ var Movieitem = React.createClass({
               <i className="iconfont icon-star"></i>
               <span className="color8 text_sub">{this.props.rating.stars}</span>
             </a>
-            </footer>
+          </footer>
 
-            </div>
+        </div>
     );
-  },
-
-  getStyle: function () {
-    return {
-      width: this.props.width,
-      height: Item.getItemHeight(),
-      backgroundColor: (this.props.itemIndex % 2) ? '#eee' : '#a5d2ee'
-    };
   },
 
   getTitleStyle: function () {
     return {
       top: 32,
       left: 80,
-      width: this.props.width - 90,
       height: 18,
       fontSize: 14,
       lineHeight: 18

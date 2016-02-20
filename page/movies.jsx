@@ -82,12 +82,9 @@ var Movies = React.createClass({
 
   componentDidMount: function() {
     this.el = document.getElementById('J_movies_list');
-    // this.el && this.el.addEventListener('scroll', this.handleScroll);
-    // document.addEventListener('scroll', this.handleScroll);
   },
 
   componentWillUnmount: function() {
-    this.el.removeEventListener('touchmove', this.handleScroll);
   },
 
   handleEvent: function (event) {
@@ -185,29 +182,10 @@ var Movies = React.createClass({
           {items}
         </section>
       </section>
-      {this.props.children}
       </div>
     );
-  },
-
-  getStyle: function () {
-    return {
-      // width: this.props.width,
-      height: Movieitem.getItemHeight(),
-      backgroundColor: (this.props.itemIndex % 2) ? '#eee' : '#a5d2ee'
-    };
-  },
-
-  getTitleStyle: function () {
-    return {
-      top: 32,
-      left: 80,
-      width: this.props.width - 90,
-      height: 18,
-      fontSize: 14,
-      lineHeight: 18
-    };
   }
+  
 
 });
 

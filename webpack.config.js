@@ -32,7 +32,7 @@ module.exports = {
         loaders: [
             { test: /\.css$/, loader: "style!css" },
             { test: /\.js$/, exclude: /node_modules/, loader: 'babel' },
-            { test: /\.jsx?$/, loaders: ['jsx?harmony']}
+            { test: /\.jsx?|\.js$/, loaders: ['jsx?harmony']}
         ]
     },
 
