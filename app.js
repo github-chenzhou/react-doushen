@@ -45,26 +45,17 @@ var App = React.createClass({
 });
 
 
-
 // router配置
 
 ReactDOM.render(( 
   <Router history={browserHistory}>
     <Route path="/" component={App}>
-      <IndexRoute component={{list: Movies}} />
-      <Route path="movies" component={{list: Movies}} />
-      <Route path="movie/:id" component={{list: Movies, info: Movieinfo}}/>
-      <Route path="books" component={{list: Books}} />
-      <Route path="book/:id" component={{list: Books, info: Book}}/>
-      <Route path="*" component={{list: Movies}}/>
-    </Route>
-    <Route path="/index.html" component={App}>
-      <IndexRoute component={{list: Movies}} />
-      <Route path="movies" component={{list: Movies}} />
-      <Route path="movie/:id" component={{list: Movies, info: Movieinfo}}/>
-      <Route path="books" component={{list: Books}} />
-      <Route path="book/:id" component={{list: Books, info: Book}}/>
-      <Route path="*" component={{list: Movies}}/>
+      <IndexRoute components={{list: Movies}} />
+      <Route path="movies" components={{list: Movies}} />
+      <Route path="movie/:id" components={{list: Movies, info: Movieinfo}}/>
+      <Route path="books" components={{list: Books}} />
+      <Route path="book/:id" components={{list: Books, info: Book}}/>
+      <Route path="*" components={{list: Movies}}/>
     </Route>
   </Router>
   ), document.getElementById('main'));
