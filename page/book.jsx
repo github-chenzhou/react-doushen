@@ -186,8 +186,8 @@ var Book = React.createClass({
           <h2><a href={this.state.data.mobile_url}>{this.state.data.title}</a></h2>
         </header>
         <article className="info_detail">{this.state.data.summary}</article>
-        <article class="info_detail">{this.state.data.catalog}</article>
-        <article class="info_detail">{this.state.data.author_intro}</article>
+        <article className="info_detail">{this.state.data.catalog}</article>
+        <article className="info_detail">{this.state.data.author_intro}</article>
       </div>
       </section>
     );
