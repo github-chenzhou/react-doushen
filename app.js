@@ -58,5 +58,12 @@ ReactDOM.render((
       <Route path="books" component={{list: Books}} />
       <Route path="book/:id" component={{list: Books, info: Book}}/>
     </Route>
+    <Route path="/react-doushen" component={App}>
+      <IndexRoute component={{list: Movies}} />
+      <Route path="movies" component={{list: Movies}} />
+      <Route path="movie/:id" component={{list: Movies, info: Movieinfo}}/>
+      <Route path="books" component={{list: Books}} />
+      <Route path="book/:id" component={{list: Books, info: Book}}/>
+    </Route>
   </Router>
   ), document.getElementById('main'));
