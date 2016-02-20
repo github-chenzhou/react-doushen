@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "dependencies": {
     "invariant": "^2.0.0",
-    "warning": "^2.0.0",
-    "react-router": "^1.0.3"
+    "react-router": "^1.0.3",
+    "warning": "^2.0.0"
   },
   "devDependencies": {
     "babel": "^5.4.7",
